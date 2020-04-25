@@ -4,11 +4,11 @@ import java.util.List;
 import java.util.Objects;
 
 public class NewsResponse {
-    private Integer totalResults;
-    private List<Article> articles;
-    private String code;
-    private String message;
-    private String status;
+    public Integer totalResults;
+    public List<Article> articles;
+    public String code;
+    public String message;
+    public String status;
 
     @Override
     public boolean equals(Object o) {

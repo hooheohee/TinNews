@@ -1,17 +1,27 @@
 package com.example.tinnews.model;
 
 
+import androidx.annotation.NonNull;
+import androidx.room.Entity;
+import androidx.room.Ignore;
+import androidx.room.PrimaryKey;
+
 import java.util.Objects;
 
+@Entity
 public class Article {
-    private Source source;
-    private String author;
-    private String content;
-    private String description;
-    private String publishedAt;
-    private String title;
-    private String url;
-    private String urlToImage;
+    @Ignore
+    public Source source;
+    public String author;
+    public String content;
+    public String description;
+    public String publishedAt;
+    @NonNull
+    @PrimaryKey
+    public String title;
+    public String url;
+    public String urlToImage;
+    public boolean favorite;
 
     @Override
     public boolean equals(Object o) {
