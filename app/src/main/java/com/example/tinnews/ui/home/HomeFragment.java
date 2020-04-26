@@ -1,28 +1,28 @@
 package com.example.tinnews.ui.home;
 
 import android.os.Bundle;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 
-import android.util.Log;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
-
-import com.example.tinnews.R;
 import com.example.tinnews.databinding.FragmentHomeBinding;
 import com.example.tinnews.model.Article;
 import com.example.tinnews.repository.NewsRepository;
 import com.example.tinnews.repository.NewsViewModelFactory;
 import com.mindorks.placeholderview.SwipeDecor;
 
+import static android.widget.Toast.LENGTH_SHORT;
+
 /**
  * A simple {@link Fragment} subclass.
  */
-public class HomeFragment extends Fragment {
+public class HomeFragment extends Fragment implements TinNewsCard.OnSwipeListener {
 
     private HomeViewModel viewModel;
     private FragmentHomeBinding binding;
@@ -59,9 +59,20 @@ public class HomeFragment extends Fragment {
                         newsResponse -> {
                             if (newsResponse != null) {
                                 for (Article article : newsResponse.articles) {
-                                    TinNewsCard tinNewsCard = new TinNewsCard(article);
+                                    TinNewsCard tinNewsCard = new TinNewsCard(article, this);
                                     binding.swipeView.addView(tinNewsCard);
                                 }
+                            }
+                        });
+        viewModel
+                .onFavorite()
+                .observe(
+                        getViewLifecycleOwner(),
+                        isSuccess -> {
+                            if (isSuccess) {
+                                Toast.makeText(getContext(), "Success", LENGTH_SHORT).show();
+                            } else {
+                                Toast.makeText(getContext(), "You might have liked before", LENGTH_SHORT).show();
                             }
                         });
 
@@ -74,4 +85,23 @@ public class HomeFragment extends Fragment {
         binding = FragmentHomeBinding.inflate(inflater, container, false);
         return binding.getRoot();
     }
+
+    @Override
+    public void onLike(Article news) {
+        viewModel.setFavoriteArticleInput(news);
+    }
+
+    @Override
+    public void onDisLike(Article news) {
+        if (binding.swipeView.getChildCount() < 3) {
+            viewModel.setCountryInput("us");
+        }
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        viewModel.onCancel();
+    }
+
 }
