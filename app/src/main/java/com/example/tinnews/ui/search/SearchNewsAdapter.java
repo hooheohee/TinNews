@@ -4,6 +4,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
@@ -47,6 +48,7 @@ public class SearchNewsAdapter extends RecyclerView.Adapter<SearchNewsAdapter.Se
     @Override
     public void onBindViewHolder(@NonNull SearchNewsViewHolder holder, int position) {
         Article article = articles.get(position);
+        holder.title.setText(article.title);
         if (article.urlToImage == null) {
             holder.newsImage.setImageResource(R.drawable.ic_empty_image);
         } else {
@@ -63,6 +65,10 @@ public class SearchNewsAdapter extends RecyclerView.Adapter<SearchNewsAdapter.Se
                         likeListener.onLike(article);
                     });
         }
+        holder.itemView.setOnClickListener(
+                v -> {
+                    likeListener.onClick(article);
+                });
     }
 
     @Override
@@ -73,11 +79,13 @@ public class SearchNewsAdapter extends RecyclerView.Adapter<SearchNewsAdapter.Se
     public static class SearchNewsViewHolder extends RecyclerView.ViewHolder {
         ImageView newsImage;
         ImageView favorite;
+        TextView title;
 
         public SearchNewsViewHolder(View itemView) {
             super(itemView);
             newsImage = itemView.findViewById(R.id.image);
             favorite = itemView.findViewById(R.id.favorite);
+            title = itemView.findViewById(R.id.title);
         }
     }
 
